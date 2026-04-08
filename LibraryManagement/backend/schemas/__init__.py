@@ -1,0 +1,2 @@
+"""Schema and DTO definitions."""
+
