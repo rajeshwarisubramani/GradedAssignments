@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/adapters/cli/handlers.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/adapters/cli/handlers.py" />
+              <option name="originalContent" value="from backend.config.settings import ensure_data_files&#10;from backend.domain.exceptions import LibraryError&#10;from backend.services import LibraryService&#10;&#10;&#10;def get_service() -&gt; LibraryService:&#10;    ensure_data_files()&#10;    return LibraryService()&#10;&#10;&#10;def safe_call(action, *args):&#10;    try:&#10;        return True, action(*args)&#10;    except LibraryError as exc:&#10;        return False, str(exc)&#10;&#10;" />
+              <option name="updatedContent" value="from backend.config.settings import ensure_data_files&#10;from backend.domain.exceptions import LibraryError&#10;from backend.services import LibraryService&#10;&#10;&#10;def get_service() -&gt; LibraryService:&#10;    &quot;&quot;&quot;Create and return a ready-to-use library service instance.&#10;&#10;    Ensures required data files exist before constructing the service.&#10;    &quot;&quot;&quot;&#10;    ensure_data_files()&#10;    return LibraryService()&#10;&#10;&#10;def safe_call(action, *args):&#10;    &quot;&quot;&quot;Execute an action and convert domain exceptions into user-safe results.&#10;&#10;    Returns a tuple where the first value indicates success.&#10;    &quot;&quot;&quot;&#10;    try:&#10;        return True, action(*args)&#10;    except LibraryError as exc:&#10;        return False, str(exc)&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,62 @@
+[
+  {
+    "member_id": "M00001",
+    "name": "John Doe",
+    "age": 15,
+    "contact_info": "213-345-1234"
+  },
+  {
+    "member_id": "M00002",
+    "name": "Emma Watson",
+    "age": 28,
+    "contact_info": "425-789-5612"
+  },
+  {
+    "member_id": "M00003",
+    "name": "Daniel Radcliffe",
+    "age": 35,
+    "contact_info": "206-555-0198"
+  },
+  {
+    "member_id": "M00004",
+    "name": "Hermione Granger",
+    "age": 24,
+    "contact_info": "206-555-0145"
+  },
+  {
+    "member_id": "M00005",
+    "name": "Ron Weasley",
+    "age": 26,
+    "contact_info": "360-555-0167"
+  },
+  {
+    "member_id": "M00006",
+    "name": "Luna Lovegood",
+    "age": 22,
+    "contact_info": "253-555-0189"
+  },
+  {
+    "member_id": "M00007",
+    "name": "Neville Longbottom",
+    "age": 30,
+    "contact_info": "425-555-0156"
+  },
+  {
+    "member_id": "M00008",
+    "name": "Ginny Weasley",
+    "age": 23,
+    "contact_info": "206-555-0134"
+  },
+  {
+    "member_id": "M00009",
+    "name": "Draco Malfoy",
+    "age": 27,
+    "contact_info": "360-555-0178"
+  },
+  {
+    "member_id": "M00010",
+    "name": "Albus Dumbledore",
+    "age": 150,
+    "contact_info": "206-555-0199"
+  }
+]

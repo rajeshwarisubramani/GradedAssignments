@@ -1,0 +1,23 @@
+[
+  {
+    "tx_id": "0032b7e3-1b1f-4598-9064-faf495e3b6d6",
+    "event_type": "BORROW",
+    "book_id": "00007",
+    "member_id": "M00010",
+    "timestamp": "2026-04-08T12:19:15.985712+00:00"
+  },
+  {
+    "tx_id": "0af657b5-c27a-4cc2-bc48-ab4eeba54843",
+    "event_type": "RETURN",
+    "book_id": "00007",
+    "member_id": "M00010",
+    "timestamp": "2026-04-08T12:20:55.987876+00:00"
+  },
+  {
+    "tx_id": "7cc9ec76-73c5-4ccc-8aa5-984fc8d277ba",
+    "event_type": "BORROW",
+    "book_id": "00001",
+    "member_id": "M00001",
+    "timestamp": "2026-04-08T12:35:35.679689+00:00"
+  }
+]
