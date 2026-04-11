@@ -21,3 +21,14 @@ class MembersRepository:
         rows.append(member)
         write_json_list(self.file_path, rows)
 
+    def find_by_name(self, name_query: str) -> list[dict]:
+        needle = name_query.strip().lower()
+        if not needle:
+            return []
+
+        return [
+            member
+            for member in self.all()
+            if needle in str(member.get("name", "")).lower()
+        ]
+

@@ -33,8 +33,8 @@ class BorrowReturnService:
         if not book:
             raise NotFoundError("Book not found.")
 
-        active = self._active_loans()
-        if book_id in active:
+        available_copies = int(book.get("available_copies", 1))
+        if available_copies <= 0:
             raise ConflictError("Book is already issued.")
 
         tx = {
@@ -45,7 +45,9 @@ class BorrowReturnService:
             "timestamp": self._now_iso(),
         }
         self.uow.transactions.append(tx)
-        self.uow.books.update(book_id, status="ISSUED")
+        new_available = max(0, available_copies - 1)
+        new_status = "issued" if new_available == 0 else "available"
+        self.uow.books.update(book_id, available_copies=new_available, status=new_status)
         return tx
 
     def return_book(self, member_id: str, book_id: str) -> dict:
@@ -69,6 +71,9 @@ class BorrowReturnService:
             "timestamp": self._now_iso(),
         }
         self.uow.transactions.append(tx)
-        self.uow.books.update(book_id, status="AVAILABLE")
+        total_copies = int(book.get("total_copies", 1))
+        available_copies = int(book.get("available_copies", 0))
+        new_available = min(total_copies, available_copies + 1)
+        self.uow.books.update(book_id, available_copies=new_available, status="available")
         return tx
 

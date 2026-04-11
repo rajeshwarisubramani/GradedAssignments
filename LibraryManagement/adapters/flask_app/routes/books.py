@@ -18,6 +18,11 @@ def add_book():
         payload.get("title", ""),
         payload.get("author", ""),
         payload.get("genre", ""),
+        payload.get("isbn", ""),
+        payload.get("publication_year"),
+        payload.get("total_copies", 1),
+        payload.get("available_copies"),
+        payload.get("status", "available"),
     )
     return book, 201
 

@@ -1,18 +1,26 @@
 from adapters.cli.handlers import get_service, safe_call
 
 
+MENU = """
+╔═══════════════════════════════════════╗
+║            CITY LIBRARY CLI           ║
+╠═══════════════════════════════════════╣
+║  1. Add book                          ║
+║  2. Register member                   ║
+║  3. Borrow book                       ║
+║  4. Return book                       ║
+║  5. Search books                      ║
+║  6. Available books by genre          ║
+║  7. Members with borrowed books       ║
+║  8. Most popular genre                ║
+║  9. List books                        ║
+║  q. Exit                              ║
+╚═══════════════════════════════════════╝
+""".strip("\n")
+
+
 def print_menu() -> None:
-    print("\n=== City Library CLI ===")
-    print("1) Add book")
-    print("2) Register member")
-    print("3) Borrow book")
-    print("4) Return book")
-    print("5) Search books")
-    print("6) Available books by genre")
-    print("7) Members with borrowed books")
-    print("8) Most popular genre")
-    print("9) List books")
-    print("q) Quit")
+    print(f"\n{MENU}")
 
 
 def _build_actions(service):
@@ -28,8 +36,9 @@ def _build_actions(service):
             service.register_member,
             input("Member ID: ").strip(),
             input("Name: ").strip(),
-            input("Age: ").strip(),
-            input("Contact info: ").strip(),
+            input("Email: ").strip(),
+            input("Phone: ").strip(),
+            input("Membership date (YYYY-MM-DD): ").strip(),
         ),
         "3": lambda: safe_call(
             service.borrow_book,
@@ -53,7 +62,7 @@ def _build_actions(service):
 
 def run_cli() -> None:
     service = get_service()
-    actions = _build_actions(service)
+    ACTIONS = _build_actions(service)
 
     while True:
         print_menu()
@@ -64,7 +73,7 @@ def run_cli() -> None:
                 print("Goodbye.")
                 break
             case _:
-                action = actions.get(choice)
+                action = ACTIONS.get(choice)
                 if action:
                     ok, result = action()
                     print("Success:" if ok else "Error:", result)

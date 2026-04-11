@@ -5,25 +5,30 @@ class ReportService:
     def __init__(self, uow) -> None:
         self.uow = uow
 
+    def _active_loans(self) -> dict[str, dict]:
+        active: dict[str, dict] = {}
+        for tx in self.uow.transactions.all():
+            book_id = tx["book_id"]
+            if tx["event_type"] == "BORROW":
+                active[book_id] = tx
+            elif tx["event_type"] == "RETURN":
+                active.pop(book_id, None)
+        return active
+
     def available_books_by_genre(self, genre: str) -> list[dict]:
         target = genre.strip().lower()
         return [
             b
             for b in self.uow.books.all()
-            if b.get("status") == "AVAILABLE" and b.get("genre", "").lower() == target
+            if b.get("status", "").lower() == "available" and b.get("genre", "").lower() == target
         ]
 
     def members_with_borrowed_books(self) -> list[dict]:
-        active: dict[str, str] = {}
-        for tx in self.uow.transactions.all():
-            book_id = tx["book_id"]
-            if tx["event_type"] == "BORROW":
-                active[book_id] = tx["member_id"]
-            elif tx["event_type"] == "RETURN":
-                active.pop(book_id, None)
+        active = self._active_loans()
 
         borrowed_by_member: dict[str, list[str]] = {}
-        for book_id, member_id in active.items():
+        for book_id, tx in active.items():
+            member_id = tx["member_id"]
             borrowed_by_member.setdefault(member_id, []).append(book_id)
 
         result = []
@@ -67,3 +72,25 @@ class ReportService:
             raise NotFoundError("Member not found.")
 
         return [tx for tx in self.uow.transactions.all() if tx.get("member_id") == normalized]
+
+    def member_active_loans(self, member_id: str) -> list[dict]:
+        normalized = member_id.strip()
+        if not normalized:
+            raise ValidationError("member_id is required.")
+        if not self.uow.members.get(normalized):
+            raise NotFoundError("Member not found.")
+
+        books = {b["book_id"]: b for b in self.uow.books.all()}
+        result: list[dict] = []
+        for book_id, tx in self._active_loans().items():
+            if tx.get("member_id") != normalized:
+                continue
+            book = books.get(book_id, {"book_id": book_id})
+            result.append(
+                {
+                    "book": book,
+                    "borrowed_at": tx.get("timestamp"),
+                }
+            )
+        return result
+

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "M001_B0004",
+    "member_id": "M001",
+    "book_id": "B0004",
+    "transaction_ids": [
+      "T00001",
+      "T00002"
+    ]
+  },
+  {
+    "id": "M0002_B0002",
+    "member_id": "M0002",
+    "book_id": "B0002",
+    "transaction_ids": [
+      "T00003",
+      "T00004"
+    ]
+  }
+]

@@ -33,3 +33,13 @@ def member_history():
     member_id = request.args.get("member_id", "")
     service = current_app.config["library_service"]
     return {"member_id": member_id, "items": service.report_member_history(member_id)}
+
+
+@reports_bp.get("/member-active-loans")
+def member_active_loans():
+    member_id = request.args.get("member_id", "")
+    service = current_app.config["library_service"]
+    return {
+        "member_id": member_id,
+        "items": service.report_member_active_loans(member_id),
+    }
