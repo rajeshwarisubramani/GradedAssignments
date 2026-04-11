@@ -1,0 +1,70 @@
+[
+  {
+    "id": "M0004_B0003",
+    "member_id": "M0004",
+    "book_id": "B0003",
+    "transaction_ids": [
+      "T00001",
+      "T00002"
+    ]
+  },
+  {
+    "id": "M0003_B0005",
+    "member_id": "M0003",
+    "book_id": "B0005",
+    "transaction_ids": [
+      "T00003",
+      "T00004"
+    ]
+  },
+  {
+    "id": "M0001_B0009",
+    "member_id": "M0001",
+    "book_id": "B0009",
+    "transaction_ids": [
+      "T00005",
+      "T00006"
+    ]
+  },
+  {
+    "id": "M0001_B0011",
+    "member_id": "M0001",
+    "book_id": "B0011",
+    "transaction_ids": [
+      "T00007"
+    ]
+  },
+  {
+    "id": "M0001_B0007",
+    "member_id": "M0001",
+    "book_id": "B0007",
+    "transaction_ids": [
+      "T00008",
+      "T00010"
+    ]
+  },
+  {
+    "id": "M0001_B0005",
+    "member_id": "M0001",
+    "book_id": "B0005",
+    "transaction_ids": [
+      "T00009"
+    ]
+  },
+  {
+    "id": "M0002_B0013",
+    "member_id": "M0002",
+    "book_id": "B0013",
+    "transaction_ids": [
+      "T00011"
+    ]
+  },
+  {
+    "id": "M0003_B0006",
+    "member_id": "M0003",
+    "book_id": "B0006",
+    "transaction_ids": [
+      "T00012"
+    ]
+  }
+]

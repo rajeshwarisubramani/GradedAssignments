@@ -1,0 +1,217 @@
+{
+  "info": {
+    "_postman_id": "0d6f41f8-57bb-4d94-9d9b-305c46f0e43a",
+    "name": "li",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45871391",
+    "_collection_link": "https://go.postman.co/collection/45871391-0d6f41f8-57bb-4d94-9d9b-305c46f0e43a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:5000/members",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/members",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "members"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/reports/available-by-genre",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/reports/available-by-genre?genre=Fantasy",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "reports",
+            "available-by-genre"
+          ],
+          "query": [
+            {
+              "key": "genre",
+              "value": "Fantasy"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/reports/book-history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/reports/book-history?book_id=00007",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "reports",
+            "book-history"
+          ],
+          "query": [
+            {
+              "key": "book_id",
+              "value": "00007"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/books",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"book_id\": \"00008\",\r\n    \"title\": \"Percy Jackson and the Lightning Thief\",\r\n    \"author\": \"Rick Riordan\",\r\n    \"genre\": \"Fantasy\",\r\n    \"status\": \"AVAILABLE\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/books",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "borrow",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"book_id\": \"00008\",\r\n    \"title\": \"Percy Jackson and the Lightning Thief\",\r\n    \"author\": \"Rick Riordan\",\r\n    \"genre\": \"Fantasy\",\r\n    \"status\": \"AVAILABLE\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/books",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/reports/member-history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/reports/member-history?member_id=M00010",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "reports",
+            "member-history"
+          ],
+          "query": [
+            {
+              "key": "member_id",
+              "value": "M00010"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "post - http://localhost:5000/books",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "        {\r\n            \"author\": \"Rick Riordan\",\r\n            \"book_id\": \"00029\",\r\n            \"genre\": \"Fantasy\",\r\n            \"status\": \"AVAILABLE\",\r\n            \"title\": \"Magnus Chase and the Gods of Asgard: The Ship of the Dead\"\r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/books",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "books"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

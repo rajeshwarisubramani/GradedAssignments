@@ -1,0 +1,46 @@
+[
+  {
+    "member_id": "M0001",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "555-0101",
+    "membership_date": "2024-01-15",
+    "status": "active",
+    "address": {
+      "street": "123 Main St",
+      "city": "Springfield",
+      "postal_code": "12345"
+    }
+  },
+  {
+    "member_id": "M0002",
+    "name": "Alice Martin",
+    "email": "alice@example.com",
+    "phone": "555-0001",
+    "membership_date": "2024-01-15",
+    "status": "active",
+    "address": {}
+  },
+  {
+    "member_id": "M0003",
+    "name": "Bob Stone",
+    "email": "bob@example.com",
+    "phone": "555-0002",
+    "membership_date": "2024-01-16",
+    "status": "active",
+    "address": {}
+  },
+  {
+    "member_id": "M0004",
+    "name": "James Doe",
+    "email": "james@gmail.com",
+    "phone": "555-0001",
+    "membership_date": "2026-04-11",
+    "status": "active",
+    "address": {
+      "street": "423 Main St",
+      "city": "Springfield",
+      "postal_code": "12345"
+    }
+  }
+]

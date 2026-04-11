@@ -1,0 +1,9 @@
+[
+  {
+    "loan_id": "L0001",
+    "book_id": "B0001",
+    "member_id": "M0001",
+    "borrow_date": "2026-04-11",
+    "return_date": null
+  }
+]

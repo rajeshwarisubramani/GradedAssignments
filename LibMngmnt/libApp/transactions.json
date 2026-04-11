@@ -1,0 +1,154 @@
+[
+  {
+    "transaction_id": "T00001",
+    "member_id": "M0004",
+    "book_id": "B0003",
+    "borrow_date": "2026-03-26",
+    "due_date": "2026-04-10",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00002",
+    "borrow_transaction_id": "T00001",
+    "member_id": "M0004",
+    "book_id": "B0003",
+    "borrow_date": "2026-03-26",
+    "due_date": "2026-04-10",
+    "return_date": "2026-04-11",
+    "status": "returned",
+    "max_borrow_days": 15,
+    "delay_info": {
+      "is_delayed": true,
+      "days_overdue": 1,
+      "return_date_actual": "2026-04-11",
+      "fine_per_day": 5.0,
+      "total_fine": 5.0
+    }
+  },
+  {
+    "transaction_id": "T00003",
+    "member_id": "M0003",
+    "book_id": "B0005",
+    "borrow_date": "2026-04-08",
+    "due_date": "2026-04-23",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00004",
+    "borrow_transaction_id": "T00003",
+    "member_id": "M0003",
+    "book_id": "B0005",
+    "borrow_date": "2026-04-08",
+    "due_date": "2026-04-23",
+    "return_date": "2026-04-11",
+    "status": "returned",
+    "max_borrow_days": 15,
+    "delay_info": {
+      "is_delayed": false,
+      "days_overdue": 0,
+      "return_date_actual": null,
+      "fine_per_day": 5.0,
+      "total_fine": 0.0
+    }
+  },
+  {
+    "transaction_id": "T00005",
+    "member_id": "M0001",
+    "book_id": "B0009",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00006",
+    "borrow_transaction_id": "T00005",
+    "member_id": "M0001",
+    "book_id": "B0009",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": "2026-04-11",
+    "status": "returned",
+    "max_borrow_days": 15,
+    "delay_info": {
+      "is_delayed": false,
+      "days_overdue": 0,
+      "return_date_actual": null,
+      "fine_per_day": 5.0,
+      "total_fine": 0.0
+    }
+  },
+  {
+    "transaction_id": "T00007",
+    "member_id": "M0001",
+    "book_id": "B0011",
+    "borrow_date": "2026-03-10",
+    "due_date": "2026-03-25",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00008",
+    "member_id": "M0001",
+    "book_id": "B0007",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00009",
+    "member_id": "M0001",
+    "book_id": "B0005",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00010",
+    "borrow_transaction_id": "T00008",
+    "member_id": "M0001",
+    "book_id": "B0007",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": "2026-04-11",
+    "status": "returned",
+    "max_borrow_days": 15,
+    "delay_info": {
+      "is_delayed": false,
+      "days_overdue": 0,
+      "return_date_actual": null,
+      "fine_per_day": 5.0,
+      "total_fine": 0.0
+    }
+  },
+  {
+    "transaction_id": "T00011",
+    "member_id": "M0002",
+    "book_id": "B0013",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  },
+  {
+    "transaction_id": "T00012",
+    "member_id": "M0003",
+    "book_id": "B0006",
+    "borrow_date": "2026-04-11",
+    "due_date": "2026-04-26",
+    "return_date": null,
+    "status": "borrowed",
+    "max_borrow_days": 15
+  }
+]
