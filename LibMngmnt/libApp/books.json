@@ -7,7 +7,7 @@
     "genre": "Technology",
     "publication_year": 2020,
     "total_copies": 5,
-    "available_copies": 5,
+    "available_copies": 4,
     "status": "available"
   },
   {
@@ -29,7 +29,7 @@
     "genre": "Technology",
     "publication_year": 2019,
     "total_copies": 3,
-    "available_copies": 3,
+    "available_copies": 2,
     "status": "available"
   },
   {
@@ -117,7 +117,7 @@
     "genre": "Adventure",
     "publication_year": 1988,
     "total_copies": 6,
-    "available_copies": 5,
+    "available_copies": 6,
     "status": "available"
   },
   {
@@ -141,5 +141,16 @@
     "total_copies": 1,
     "available_copies": 0,
     "status": "unavailable"
+  },
+  {
+    "book_id": "B0014",
+    "title": "Harry Potter and the Prisoner of Azkaban",
+    "author": "J.K. Rowling",
+    "isbn": "978-0-439708-20-6",
+    "genre": "Fantasy",
+    "publication_year": 2020,
+    "total_copies": 4,
+    "available_copies": 4,
+    "status": "available"
   }
 ]

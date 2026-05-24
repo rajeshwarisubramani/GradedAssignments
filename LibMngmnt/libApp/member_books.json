@@ -31,7 +31,8 @@
     "member_id": "M0001",
     "book_id": "B0011",
     "transaction_ids": [
-      "T00007"
+      "T00007",
+      "T00013"
     ]
   },
   {
@@ -65,6 +66,40 @@
     "book_id": "B0006",
     "transaction_ids": [
       "T00012"
+    ]
+  },
+  {
+    "id": "M0001_B0003",
+    "member_id": "M0001",
+    "book_id": "B0003",
+    "transaction_ids": [
+      "T00014"
+    ]
+  },
+  {
+    "id": "M0001_B0001",
+    "member_id": "M0001",
+    "book_id": "B0001",
+    "transaction_ids": [
+      "T00015",
+      "T00016"
+    ]
+  },
+  {
+    "id": "M0004_B0001",
+    "member_id": "M0004",
+    "book_id": "B0001",
+    "transaction_ids": [
+      "T00017"
+    ]
+  },
+  {
+    "id": "M0005_B0006",
+    "member_id": "M0005",
+    "book_id": "B0006",
+    "transaction_ids": [
+      "T00018",
+      "T00019"
     ]
   }
 ]

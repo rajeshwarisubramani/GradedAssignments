@@ -19,10 +19,10 @@ from appHelper import (
     return_book,
     get_open_borrow_transactions,
     get_open_member_borrows,
-    get_open_overdue_borrow_transactions,
     total_fines_collected,
     FINE_PER_DAY,
-    MAX_BORROW_DAYS,
+    get_genre_borrow_popularity,
+
 )
 
 
@@ -229,6 +229,47 @@ with tab_return:
 
     member_id_query = st.text_input("Enter Member ID", placeholder="e.g. M0001").strip().upper()
 
+
+    @st.dialog("Confirm Book Return")
+    def confirm_return_dialog(txn: dict, book_title: str, return_dt: date):
+        st.write(f"Are you sure you want to return **{book_title}**?")
+        st.caption(f"Transaction: {txn['transaction_id']} | Return Date: {return_dt}")
+
+        # Overdue preview inside dialog
+        due_dt = datetime.strptime(txn["due_date"], "%Y-%m-%d").date()
+        days_overdue = max(0, (return_dt - due_dt).days)
+
+        if days_overdue > 0:
+            total_fine = round(days_overdue * FINE_PER_DAY, 2)
+            st.warning(
+                f"⚠️ Overdue return: {days_overdue} day(s)\n\n"
+                f"Fine Preview: ₹{FINE_PER_DAY:.2f} × {days_overdue} = ₹{total_fine:.2f}"
+            )
+        else:
+            st.info("No overdue fine for this return.")
+
+        c_ok, c_cancel = st.columns(2)
+
+        if c_ok.button("OK", key=f"ok_return_{txn['transaction_id']}"):
+            ok, msg, delay_info, books_new, transactions_new, member_books_new = return_book(
+                books, transactions, member_books, txn["transaction_id"], return_dt
+            )
+            if ok:
+                save_all(books_new, members, transactions_new, member_books_new)
+                st.success(msg)
+                if delay_info.get("is_delayed"):
+                    st.warning(
+                        f"Fine: {delay_info['days_overdue']} day(s) × "
+                        f"₹{delay_info['fine_per_day']:.2f} = ₹{delay_info['total_fine']:.2f}"
+                    )
+                st.rerun()
+            else:
+                st.error(msg)
+
+        if c_cancel.button("Cancel", key=f"cancel_return_{txn['transaction_id']}"):
+            st.rerun()
+
+
     if not member_id_query:
         st.info("Enter a Member ID to view transactions.")
     else:
@@ -241,38 +282,8 @@ with tab_return:
             # All transactions for this member (borrow + return)
             member_txns = [t for t in transactions if t["member_id"] == member_id_query]
 
-
-            st.markdown("### Transactions")
-            if member_txns:
-                rows = []
-                for t in member_txns:
-                    b = find_book(books, t["book_id"])
-                    rows.append({
-                        "Txn ID": t["transaction_id"],
-                        "Type": "Return" if "borrow_transaction_id" in t else "Borrow",
-                        "Book": b["title"] if b else t["book_id"],
-                        "Borrow Date": t.get("borrow_date"),
-                        "Due Date": t.get("due_date"),
-                        "Return Date": t.get("return_date") or "—",
-                        "Status": t.get("status", "").capitalize(),
-                    })
-                st.dataframe(rows, use_container_width=True, hide_index=True)
-            else:
-                st.info("No transactions found for this member.")
-
             st.markdown("### Borrowed (Not Yet Returned)")
-            closed_borrow_ids = {
-                t["borrow_transaction_id"]
-                for t in transactions
-                if "borrow_transaction_id" in t
-            }
-            open_member_borrows = [
-                t for t in get_open_borrows(transactions)
-                if (
-                    t["member_id"] == member_id_query
-                    and t["transaction_id"] not in closed_borrow_ids
-                )
-            ]
+
             open_borrows = get_open_member_borrows(transactions, member_id_query)
 
             if not open_borrows:
@@ -292,20 +303,26 @@ with tab_return:
                     c4.write(f"**Due:** {t['due_date']}")
 
                     if c5.button("Return", key=f"btn_return_{t['transaction_id']}"):
-                        ok, msg, delay_info, books, transactions, member_books = return_book(
-                            books, transactions, member_books, t["transaction_id"], return_dt
-                        )
-                        if ok:
-                            save_all(books, members, transactions, member_books)
-                            st.success(msg)
-                            if delay_info.get("is_delayed"):
-                                st.warning(
-                                    f"Fine: {delay_info['days_overdue']} day(s) × "
-                                    f"₹{delay_info['fine_per_day']:.2f} = ₹{delay_info['total_fine']:.2f}"
-                                )
-                            st.rerun()
-                        else:
-                            st.error(msg)
+                        confirm_return_dialog(t, book_title, return_dt)
+
+
+            st.markdown("### Transactions")
+            if member_txns:
+                rows = []
+                for t in member_txns:
+                    b = find_book(books, t["book_id"])
+                    rows.append({
+                        "Txn ID": t["transaction_id"],
+                        "Type": "Return" if "borrow_transaction_id" in t else "Borrow",
+                        "Book": b["title"] if b else t["book_id"],
+                        "Borrow Date": t.get("borrow_date"),
+                        "Due Date": t.get("due_date"),
+                        "Return Date": t.get("return_date") or "—",
+                        "Status": t.get("status", "").capitalize(),
+                    })
+                st.dataframe(rows, use_container_width=True, hide_index=True)
+            else:
+                st.info("No transactions found for this member.")
 
 # ─────────────────────────────────────────────────────────────
 # TAB 6 – MEMBER INFO
@@ -339,7 +356,7 @@ with tab_member_info:
                 f"Address: {addr.get('street', '')}, {addr.get('city', '')}, {addr.get('postal_code', '')}".strip(", ")
             )
 
-            st.markdown("### Unreturned Books")
+            st.markdown("### Active Borrowed Books")
             open_member_borrows = get_open_member_borrows(transactions, member_id_info)
 
             if open_member_borrows:
@@ -363,7 +380,7 @@ with tab_member_info:
                         "Accrued Fine ₹": fine,
                     })
 
-                st.metric("Current Fine on Unreturned Books (₹)", f"{total_overdue_fine:.2f}")
+                st.metric("Current Fine on Active Borrowed Books (₹)", f"{total_overdue_fine:.2f}")
 
                 open_df = pd.DataFrame(rows)
 
@@ -377,7 +394,7 @@ with tab_member_info:
                     hide_index=True,
                 )
             else:
-                st.success("No unreturned books for this member.")
+                st.success("No Active Borrowed Books for this member.")
 
             st.markdown("### All Transactions")
             member_txns = [t for t in transactions if t.get("member_id") == member_id_info]
@@ -409,7 +426,6 @@ with tab_reports:
 
     # ── Summary metrics ────────────────────────────────────
     open_borrows = get_open_borrow_transactions(transactions)
-    overdue_list = get_open_overdue_borrow_transactions(transactions)
     fines_total  = total_fines_collected(open_borrows)
 
     m1, m2, m3, m4, m5, m6 = st.columns(6)
@@ -422,8 +438,8 @@ with tab_reports:
 
     st.divider()
 
-    # ── All Unreturned Books ───────────────────────────────────────
-    st.subheader("📖 All Unreturned Books")
+    # ── All Active Borrowed Books ───────────────────────────────────────
+    st.subheader("📖 All Active Borrowed Books")
     all_unreturned = get_open_borrow_transactions(transactions)
 
     if all_unreturned:
@@ -495,34 +511,70 @@ with tab_reports:
 
         if sel:
             mid = member_lookup[sel]
-        hist = get_open_member_borrows(transactions, mid)
-        if hist:
-            rows = []
-            for t in hist:
-                b    = find_book(books, t["book_id"])
-                fine = "—"
-                # Find the matching return transaction
-                for rt in transactions:
-                    if rt.get("borrow_transaction_id") == t["transaction_id"]:
-                        di   = rt.get("delay_info", {})
-                        fine = f"₹{di.get('total_fine', 0):.2f}"
-                        break
-                rows.append({
-                    "Txn ID":      t["transaction_id"],
-                    "Book":        b["title"] if b else t["book_id"],
-                    "Borrow Date": t["borrow_date"],
-                    "Due Date":    t["due_date"],
-                    "Return Date": t.get("return_date") or "Not returned",
-                    "Status":      t["status"].capitalize(),
-                    "Fine":        fine,
-                })
-            st.dataframe(rows, use_container_width=True, hide_index=True)
+            hist = get_open_member_borrows(transactions, mid)
+            if hist:
+                rows = []
+                for t in hist:
+                    b    = find_book(books, t["book_id"])
+                    fine = "—"
+                    # Find the matching return transaction
+                    for rt in transactions:
+                        if rt.get("borrow_transaction_id") == t["transaction_id"]:
+                            di   = rt.get("delay_info", {})
+                            fine = f"₹{di.get('total_fine', 0):.2f}"
+                            break
+                    rows.append({
+                        "Txn ID":      t["transaction_id"],
+                        "Book":        b["title"] if b else t["book_id"],
+                        "Borrow Date": t["borrow_date"],
+                        "Due Date":    t["due_date"],
+                        "Return Date": t.get("return_date") or "Not returned",
+                        "Status":      t["status"].capitalize(),
+                        "Fine":        fine,
+                    })
+                st.dataframe(rows, use_container_width=True, hide_index=True)
+            else:
+                st.info("No borrow history for this member.")
         else:
-            st.info("No borrow history for this member.")
+            st.info("Please select a member.")
     else:
         st.info("No members registered yet.")
 
     st.divider()
+    # ── Genre Popularity (Borrowed Records) ───────────────────────────
+
+    st.subheader("🔥 Genre Popularity (Borrowed Records)")
+
+    pop = get_genre_borrow_popularity(
+        books,
+        transactions,
+        only_open_borrows=False,   # set True if you want only currently active borrows
+        top_n_books=5,
+    )
+
+    st.metric("Borrow Records Counted", pop["total_borrow_records"])
+
+    if pop["genre_rows"]:
+        st.dataframe(pd.DataFrame(pop["genre_rows"]), use_container_width=True, hide_index=True)
+
+        if pop["top_genre"]:
+            st.success(
+                f"Most popular genre: **{pop['top_genre']['genre']}** "
+                f"({pop['top_genre']['count']} borrowed)"
+            )
+
+        st.markdown("### Top Borrowed Books")
+        if pop["top_books"]:
+            st.dataframe(pd.DataFrame(pop["top_books"]), use_container_width=True, hide_index=True)
+        else:
+            st.info("No borrowed books found.")
+    else:
+        st.info("No borrowed records found to build popularity report.")
+
+
+    st.divider()
+
+
 
     # ── Full transaction history ───────────────────────────
     st.subheader("📋 Full Transaction History")

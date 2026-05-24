@@ -42,5 +42,18 @@
       "city": "Springfield",
       "postal_code": "12345"
     }
+  },
+  {
+    "member_id": "M0005",
+    "name": "Chris Martin",
+    "email": "chris@example.com",
+    "phone": "555-0103",
+    "membership_date": "2026-04-12",
+    "status": "active",
+    "address": {
+      "street": "5678 Oak Avenue",
+      "city": "Austin",
+      "postal_code": "78701"
+    }
   }
 ]

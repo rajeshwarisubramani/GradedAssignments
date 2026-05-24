@@ -377,49 +377,6 @@ def return_book(
     msg = f"Book returned. Return Txn ID: **{ret_txn_id}**\n\n{fine_msg}"
     return True, msg, delay_info, books, transactions, member_books
 
-
-def update_book_availability(book_id: str, action: str) -> tuple:
-    """
-    Update available_copies and status in books.json for a given book_id.
-
-    Args:
-        book_id: e.g. "B0001"
-        action: "borrowed" or "returned"
-
-    Returns:
-        (success: bool, message: str, updated_book: dict | None)
-    """
-    action = action.strip().lower()
-    if action not in {"borrowed", "returned"}:
-        return False, "action must be 'borrowed' or 'returned'.", None
-
-    books = load_json(BOOKS_FILE, [])
-    book = find_book(books, book_id)
-    if not book:
-        return False, f"Book {book_id} not found.", None
-
-    total = int(book.get("total_copies", 0))
-    available = int(book.get("available_copies", 0))
-
-    if action == "borrowed":
-        if available <= 0:
-            return False, "No copies available to borrow.", None
-        book["available_copies"] = available - 1
-        if book["available_copies"] == 0:
-            book["status"] = "unavailable"
-        ok = True
-    else:  # action == "returned"
-        if available >= total:
-            return False, "All copies are already available; cannot return.", None
-        book["available_copies"] = available + 1
-        if book["available_copies"] > 0:
-            book["status"] = "available"
-        ok = True
-
-    save_json(BOOKS_FILE, books)
-    return ok, "Book availability updated.", book
-
-
 # ═════════════════════════════════════════════════════════════
 # SECTION 5 ── REPORT HELPERS
 # ═════════════════════════════════════════════════════════════
@@ -471,43 +428,6 @@ def get_open_member_borrows(transactions: list[dict], member_id: str) -> list[di
         )
     ]
 
-
-def get_open_borrows(transactions: list) -> list:
-    """Return all transactions that are open borrows (not yet returned)."""
-    return [
-        t for t in transactions
-        if t["status"] == "borrowed" and "borrow_transaction_id" not in t
-    ]
-
-def get_open_member_borrows_overdue(transactions: list[dict], member_id: str) -> list[dict]:
-    """
-    Return borrowed transaction objects for a specific member that:
-    - Have status == 'borrowed'
-    - Are NOT referenced by any transaction's borrow_transaction_id (no return record exists)
-    - Have due_date < today
-    """
-    referenced_borrow_ids = {
-        t.get("borrow_transaction_id")
-        for t in transactions
-        if t.get("borrow_transaction_id")
-    }
-
-    result = []
-    for t in transactions:
-        if (
-            t.get("member_id") == member_id
-            and t.get("status") == "borrowed"
-            and t.get("transaction_id") not in referenced_borrow_ids
-        ):
-            try:
-                due_date = datetime.strptime(t["due_date"], "%Y-%m-%d").date()
-                if due_date < date.today():
-                    result.append(t)
-            except (ValueError, TypeError, KeyError):
-                pass
-
-    return result
-
 def get_open_overdue_borrow_transactions(transactions: list[dict]) -> list[dict]:
     """
     Return borrowed transaction objects that:
@@ -538,25 +458,6 @@ def get_open_overdue_borrow_transactions(transactions: list[dict]) -> list[dict]
 
     return result
 
-def get_overdue_borrows(transactions: list) -> list:
-    """Return open borrows whose due date has already passed."""
-    today  = date.today()
-    result = []
-    for t in get_open_borrows(transactions):
-        due = datetime.strptime(t["due_date"], "%Y-%m-%d").date()
-        if due < today:
-            result.append(t)
-    return result
-
-
-def get_member_history(transactions: list, member_id: str) -> list:
-    """Return all original borrow transactions for a given member."""
-    return [
-        t for t in transactions
-        if t["member_id"] == member_id and "borrow_transaction_id" not in t
-    ]
-
-
 def total_fines_collected(transactions: list) -> float:
     """Sum all fines from completed return transactions."""
     today = date.today()
@@ -569,3 +470,82 @@ def total_fines_collected(transactions: list) -> float:
         total += fine
     return round(total, 2)
 
+def get_genre_borrow_popularity(
+    books: list[dict],
+    transactions: list[dict],
+    only_open_borrows: bool = False,
+    top_n_books: int = 5,
+) -> dict:
+    """
+    Build borrowed-book popularity analytics by genre.
+
+    Args:
+        books: Book catalog list
+        transactions: All transactions
+        only_open_borrows:
+            False -> include every record with status == 'borrowed'
+            True  -> include only currently open borrows
+        top_n_books: number of top books to return
+
+    Returns:
+        {
+          "total_borrow_records": int,
+          "genre_rows": [{"Genre": str, "Borrowed Count": int, "Share %": float}],
+          "top_genre": {"genre": str, "count": int} | None,
+          "top_books": [{"Book ID": str, "Title": str, "Genre": str, "Borrowed Count": int}]
+        }
+    """
+    book_by_id = {b.get("book_id"): b for b in books}
+
+    if only_open_borrows:
+        borrow_rows = get_open_borrow_transactions(transactions)
+    else:
+        borrow_rows = [t for t in transactions if t.get("status") == "borrowed"]
+
+    genre_counts = {}
+    book_counts = {}
+
+    for t in borrow_rows:
+        book_id = t.get("book_id")
+        b = book_by_id.get(book_id)
+        if not b:
+            continue
+
+        genre = (b.get("genre") or "Unknown").strip() or "Unknown"
+        genre_counts[genre] = genre_counts.get(genre, 0) + 1
+        book_counts[book_id] = book_counts.get(book_id, 0) + 1
+
+    total = sum(genre_counts.values())
+
+    genre_rows = []
+    for genre, count in sorted(genre_counts.items(), key=lambda x: (-x[1], x[0])):
+        share = round((count / total) * 100, 2) if total else 0.0
+        genre_rows.append({
+            "Genre": genre,
+            "Borrowed Count": count,
+            "Share %": share,
+        })
+
+    top_genre = None
+    if genre_rows:
+        top_genre = {
+            "genre": genre_rows[0]["Genre"],
+            "count": genre_rows[0]["Borrowed Count"],
+        }
+
+    top_books = []
+    for book_id, count in sorted(book_counts.items(), key=lambda x: (-x[1], x[0]))[:top_n_books]:
+        b = book_by_id.get(book_id, {})
+        top_books.append({
+            "Book ID": book_id,
+            "Title": b.get("title", book_id),
+            "Genre": b.get("genre", "Unknown"),
+            "Borrowed Count": count,
+        })
+
+    return {
+        "total_borrow_records": total,
+        "genre_rows": genre_rows,
+        "top_genre": top_genre,
+        "top_books": top_books,
+    }
